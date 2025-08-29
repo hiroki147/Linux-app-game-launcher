@@ -113,40 +113,41 @@ class LauncherWindow(QWidget):
             self.desktop_infos.append(info)
 
     def create_apps_frame(self, target_type):
-        frame = QFrame()
-        layout = QVBoxLayout()
-        for info in self.desktop_infos:
-            if info["type"] != target_type:
-                continue
-            row = QHBoxLayout()
-            icon_path = find_icon_path(info["icon"])
-            if icon_path:
-                pixmap = QPixmap(icon_path).scaled(32, 32)
-                icon_label = QLabel()
-                icon_label.setPixmap(pixmap)
-            else:
-                icon_label = QLabel("🗂")
-            row.addWidget(icon_label)
+    frame = QFrame()
+    layout = QVBoxLayout()
+    for info in self.desktop_infos:
+        if info["type"] != target_type:
+            continue
+        row = QHBoxLayout()
+        icon_path = find_icon_path(info["icon"])
+        if icon_path:
+            pixmap = QPixmap(icon_path).scaled(32, 32)
+            icon_label = QLabel()
+            icon_label.setPixmap(pixmap)
+        else:
+            icon_label = QLabel("🗂")
+        row.addWidget(icon_label)
 
-            btn = QPushButton(info["name"])
-            btn.setStyleSheet("font-size: 16px; padding: 8px;")
-            btn.clicked.connect(lambda checked, cmd=info["exec"]: self.launch_app(cmd))
-            row.addWidget(btn)
+        btn = QPushButton(info["name"])
+        btn.setStyleSheet("font-size: 16px; padding: 8px;")
+        btn.clicked.connect(lambda checked, cmd=info["exec"]: self.launch_app(cmd))
+        row.addWidget(btn)
 
-            # 選択用（削除時）
-            select_btn = QPushButton("選択")
-            select_btn.setMaximumWidth(60)
-            select_btn.clicked.connect(lambda checked, path=info["path"]: self.select_item(path))
-            row.addWidget(select_btn)
+        # 選択用（削除時）
+        select_btn = QPushButton("選択")
+        select_btn.setMaximumWidth(60)
+        select_btn.clicked.connect(lambda checked, path=info["path"]: self.select_item(path))
+        row.addWidget(select_btn)
 
-            # タイプ表示
-            type_label = QLabel(info["type"])
-            type_label.setMaximumWidth(50)
-            row.addWidget(type_label)
+        # ↓↓↓ タイプ表示ラベルを削除
+        # # タイプ表示
+        # type_label = QLabel(info["type"])
+        # type_label.setMaximumWidth(50)
+        # row.addWidget(type_label)
 
-            layout.addLayout(row)
-        frame.setLayout(layout)
-        return frame
+        layout.addLayout(row)
+    frame.setLayout(layout)
+    return frame
 
     def refresh_tabs(self):
         # タブの内容を更新
