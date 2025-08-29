@@ -31,13 +31,21 @@ def parse_desktop_file(path):
     }
     try:
         with open(path, "r") as f:
+            in_desktop_entry = False
             for line in f:
-                if line.startswith("Name="):
-                    info["name"] = line.strip().split("=", 1)[1]
-                elif line.startswith("Exec="):
-                    info["exec"] = line.strip().split("=", 1)[1].split()[0]
-                elif line.startswith("Icon="):
-                    info["icon"] = line.strip().split("=", 1)[1]
+                line = line.strip()
+                if line.startswith("[Desktop Entry]"):
+                    in_desktop_entry = True
+                    continue
+                elif line.startswith("[") and not line.startswith("[Desktop Entry]"):
+                    in_desktop_entry = False
+                if in_desktop_entry:
+                    if line.startswith("Name="):
+                        info["name"] = line.split("=", 1)[1]
+                    elif line.startswith("Exec="):
+                        info["exec"] = line.split("=", 1)[1].split()[0]
+                    elif line.startswith("Icon="):
+                        info["icon"] = line.split("=", 1)[1]
     except Exception as e:
         print(f"Error reading {path}: {e}")
     return info
